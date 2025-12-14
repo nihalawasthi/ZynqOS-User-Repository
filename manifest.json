@@ -1,48 +1,48 @@
 {
+  "lastUpdated": "2025-12-14T18:24:08Z",
+  "version": "1.0",
   "packages": [
     {
+      "size": "45678",
+      "id": "hello-zynq",
+      "dependencies": [],
       "category": "utilities",
-      "license": "MIT",
       "name": "hello-zynq",
       "downloadUrl": "https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/hello-zynq-v1.0.0/hello-zynq.wasm",
-      "version": "1.0.0",
-      "size": "45678",
-      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
-      "dependencies": [],
-      "maintainer": "ZynqOS Community <community@zynqos.org>",
       "icon": "👋",
-      "description": "A simple Hello World WASI application for ZynqOS",
-      "id": "hello-zynq",
       "author": "ZynqOS Community",
+      "maintainer": "ZynqOS Community <community@zynqos.org>",
       "type": "wasi",
+      "description": "A simple Hello World WASI application for ZynqOS",
+      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
       "tags": [
         "example",
         "tutorial",
         "hello-world",
         "wasi"
-      ]
+      ],
+      "license": "MIT",
+      "version": "1.0.0"
     },
     {
+      "id": "calculator",
       "category": "productivity",
-      "license": "MIT",
       "name": "calculator",
       "downloadUrl": "https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/calculator-v1.0.0/calculator-wasm.zip",
-      "version": "1.0.0",
-      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
-      "maintainer": "Your Name <email@example.com>",
       "icon": "https://your.cdn/icon-calculator.png",
+      "maintainer": "Your Name <email@example.com>",
+      "type": "wasm-bindgen",
       "description": "Simple WASM calculator with wasm-bindgen testing ZUR",
-      "id": "calculator",
+      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
       "tags": [
         "calculator",
         "wasm",
         "wasm-bindgen"
       ],
-      "type": "wasm-bindgen"
+      "license": "MIT",
+      "version": "1.0.0"
     }
   ],
-  "name": "ZynqOS User Repository",
-  "version": "1.0",
-  "lastUpdated": "2025-12-14T18:18:11Z",
-  "description": "Community-maintained WebAssembly packages for ZynqOS"
+  "description": "Community-maintained WebAssembly packages for ZynqOS",
+  "name": "ZynqOS User Repository"
 }
