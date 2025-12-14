@@ -7,6 +7,6 @@ url="https://github.com/nihalawasthi/ZynqOS-User-Repository"
 license=('MIT')
 maintainer="Nihal Awasthi"
 icon="https://raw.githubusercontent.com/nihalawasthi/ZynqOS-User-Repository/main/packages/productivity/calculator/icon.png"
-downloadUrl="https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/calculator-v1.0.0/calculator-wasm.zip"
+downloadUrl="https://raw.githubusercontent.com/nihalawasthi/ZynqOS-User-Repository/main/packages/productivity/calculator/calculator-wasm.zip"
 category="productivity"
 tags=('calculator' 'wasm' 'wasm-bindgen')
