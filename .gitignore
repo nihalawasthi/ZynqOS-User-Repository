@@ -1,0 +1,37 @@
+# Build artifacts
+build/
+pkg/
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+
+# Compressed files (unless they're package sources)
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.zip
+*.rar
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Package manager files
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# System files
+Thumbs.db

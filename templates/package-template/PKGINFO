@@ -1,0 +1,52 @@
+# Package Information File
+# This file contains metadata about the package
+
+# Package name (lowercase, use hyphens for spaces)
+pkgname=example-package
+
+# Package version
+pkgver=1.0.0
+
+# Package release number (increment for package updates with same version)
+pkgrel=1
+
+# Short description of the package
+pkgdesc="A short description of what this package does"
+
+# Supported architectures (space-separated)
+# Options: armv7, aarch64, x86_64, any
+arch=('armv7' 'aarch64')
+
+# Project homepage URL
+url="https://example.com/project"
+
+# License (use SPDX identifiers when possible)
+# Examples: GPL, GPL-2.0, GPL-3.0, MIT, Apache-2.0, BSD-3-Clause
+license=('MIT')
+
+# Runtime dependencies (space-separated)
+depends=('base-system')
+
+# Build-time dependencies (space-separated)
+makedepends=('gcc' 'make')
+
+# Optional dependencies with descriptions
+optdepends=(
+    'optional-package: for additional features'
+)
+
+# Source URLs or files (space-separated)
+source=(
+    "https://example.com/releases/${pkgname}-${pkgver}.tar.gz"
+)
+
+# SHA256 checksums for sources (same order as source array)
+sha256sums=(
+    'SKIP'
+)
+
+# Package maintainer
+maintainer="Your Name <your.email@example.com>"
+
+# Additional notes or important information
+notes="Any important notes about this package"
