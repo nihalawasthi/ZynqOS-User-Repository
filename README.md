@@ -112,9 +112,10 @@ Thanks to all the amazing people who contribute to ZUR!
   <img src="https://contrib.rocks/image?repo=nihalawasthi/ZynqOS-User-Repository" />
 </a>
 
-## ZynqOS Founder
+## ZynqOS Team
 
-  <img src="" />
+| <img src="https://github.com/user-attachments/assets/cc09927f-e354-45a2-b7b7-c8a5886f5ac4" width="80" height="80" style="border-radius:50%;" alt="Nihal Awasthi" /> | **Nihal Awasthi**<br/>Founder of **ZynqOS**<br/><br/>[**Email**](mailto:nihalawasthi@gmail.com) · [**GitHub**](https://github.com/nihalawasthi) |
+|---|---|
 
 
 ## Acknowledgments
