@@ -1,0 +1,16 @@
+# Package Information File
+
+pkgname=hello-zynq
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="A simple Hello World application for ZynqOS"
+arch=('armv7' 'aarch64' 'x86_64' 'any')
+url="https://github.com/nihalawasthi/ZynqOS-User-Repository"
+license=('MIT')
+depends=()
+makedepends=()
+optdepends=()
+source=('hello-zynq.c')
+sha256sums=('SKIP')
+maintainer="ZynqOS Community <community@zynqos.org>"
+notes="This is an example package demonstrating the ZUR package structure"
