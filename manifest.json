@@ -1,48 +1,48 @@
 {
-  "description": "Community-maintained WebAssembly packages for ZynqOS",
-  "lastUpdated": "2025-12-14T18:37:50Z",
   "packages": [
     {
-      "size": "45678",
-      "type": "wasi",
-      "icon": "👋",
-      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
-      "downloadUrl": "https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/hello-zynq-v1.0.0/hello-zynq.wasm",
-      "name": "hello-zynq",
-      "author": "ZynqOS Community",
       "id": "hello-zynq",
-      "description": "A simple Hello World WASI application for ZynqOS",
+      "downloadUrl": "https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/hello-zynq-v1.0.0/hello-zynq.wasm",
+      "size": "45678",
+      "license": "MIT",
       "maintainer": "ZynqOS Community <community@zynqos.org>",
+      "author": "ZynqOS Community",
+      "type": "wasi",
+      "dependencies": [],
+      "description": "A simple Hello World WASI application for ZynqOS",
       "tags": [
         "example",
         "tutorial",
         "hello-world",
         "wasi"
       ],
-      "dependencies": [],
-      "license": "MIT",
-      "category": "utilities",
-      "version": "1.0.0"
+      "name": "hello-zynq",
+      "version": "1.0.0",
+      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
+      "icon": "👋",
+      "category": "utilities"
     },
     {
-      "type": "wasm-bindgen",
-      "icon": "https://raw.githubusercontent.com/nihalawasthi/ZynqOS-User-Repository/main/packages/productivity/calculator/icon.png",
-      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
-      "downloadUrl": "https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/calculator-v1.0.0/calculator-wasm.zip",
-      "name": "calculator",
       "id": "calculator",
-      "description": "Simple WASM calculator with wasm-bindgen testing ZUR",
-      "maintainer": "Nihal Awasthi",
+      "downloadUrl": "https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/calculator-v1.0.0/calculator-wasm.zip",
       "tags": [
         "calculator",
         "wasm",
         "wasm-bindgen"
       ],
       "license": "MIT",
-      "category": "productivity",
-      "version": "1.0.0"
+      "maintainer": "Nihal Awasthi",
+      "type": "wasm-bindgen",
+      "description": "Simple WASM calculator with wasm-bindgen testing ZUR",
+      "name": "calculator",
+      "version": "1.0.0",
+      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
+      "icon": "https://raw.githubusercontent.com/nihalawasthi/ZynqOS-User-Repository/main/packages/productivity/calculator/icon.png",
+      "category": "productivity"
     }
   ],
+  "name": "ZynqOS User Repository",
   "version": "1.0",
-  "name": "ZynqOS User Repository"
+  "lastUpdated": "2025-12-14T18:39:12Z",
+  "description": "Community-maintained WebAssembly packages for ZynqOS"
 }
