@@ -1,0 +1,49 @@
+name: Generate Package Manifest
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'packages/**'
+      - 'generate-manifest.ps1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate manifest.json
+        shell: pwsh
+        run: |
+          Write-Host "🚀 Generating manifest.json..." -ForegroundColor Cyan
+          .\generate-manifest.ps1
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet manifest.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push if changed
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add manifest.json
+          git commit -m "🤖 Auto-update manifest.json"
+          git push
+
+      - name: Display manifest
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          echo "✅ Manifest updated!"
+          cat manifest.json

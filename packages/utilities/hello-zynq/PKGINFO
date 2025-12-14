@@ -1,16 +1,43 @@
-# Package Information File
+# ZynqOS Package Information
 
+# Package identification
 pkgname=hello-zynq
 pkgver=1.0.0
 pkgrel=1
-pkgdesc="A simple Hello World application for ZynqOS"
-arch=('armv7' 'aarch64' 'x86_64' 'any')
+
+# Description
+pkgdesc="A simple Hello World WASI application for ZynqOS"
+longdesc="Demonstrates basic WASI functionality with console output. Great starting point for learning WASM development."
+
+# Package type: wasm, wasi, or wasm-bindgen
+pkgtype=wasi
+
+# Display
+icon="👋"
+
+# URLs
 url="https://github.com/nihalawasthi/ZynqOS-User-Repository"
-license=('MIT')
+downloadUrl="https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/hello-zynq-v1.0.0/hello-zynq.wasm"
+
+# Legal
+license=MIT
+author="ZynqOS Community"
+
+# Categorization
+tags=('example' 'tutorial' 'hello-world' 'wasi')
+category=utilities
+
+# Technical
+size=45678
+checksum=
+
+# Dependencies (other ZUR package names)
 depends=()
-makedepends=()
-optdepends=()
-source=('hello-zynq.c')
-sha256sums=('SKIP')
+
+# Permissions required
+permissions_filesystem=read
+permissions_network=false
+permissions_storage=false
+
+# Maintainer
 maintainer="ZynqOS Community <community@zynqos.org>"
-notes="This is an example package demonstrating the ZUR package structure"

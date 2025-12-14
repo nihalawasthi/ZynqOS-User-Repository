@@ -1,33 +1,76 @@
-# Package Information File
-# This file contains metadata about the package
+# ZynqOS Package Information Template
+# Copy this file and fill in your package details
 
-# Package name (lowercase, use hyphens for spaces)
+# ===== REQUIRED FIELDS =====
+
+# Package name (lowercase, use hyphens, e.g., my-awesome-app)
 pkgname=example-package
 
-# Package version
+# Semantic version (MAJOR.MINOR.PATCH)
 pkgver=1.0.0
 
-# Package release number (increment for package updates with same version)
+# Package release (increment for re-packaging same version)
 pkgrel=1
 
-# Short description of the package
+# Short description (one line, under 80 chars)
 pkgdesc="A short description of what this package does"
 
-# Supported architectures (space-separated)
-# Options: armv7, aarch64, x86_64, any
-arch=('armv7' 'aarch64')
+# Package type: wasm, wasi, or wasm-bindgen
+pkgtype=wasm-bindgen
 
-# Project homepage URL
+# Display icon (emoji or URL to icon file in package)
+icon="📦"
+
+# Download URL for the package binary (.wasm or .zip)
+downloadUrl="https://github.com/username/repo/releases/download/v1.0.0/package.zip"
+
+# License (SPDX identifier: MIT, Apache-2.0, GPL-3.0, etc.)
+license=MIT
+
+# Author name
+author="Your Name"
+
+# ===== OPTIONAL FIELDS =====
+
+# Detailed description (multi-line supported)
+longdesc="Longer description explaining what the package does, its features, and use cases."
+
+# Homepage URL
 url="https://example.com/project"
 
-# License (use SPDX identifiers when possible)
-# Examples: GPL, GPL-2.0, GPL-3.0, MIT, Apache-2.0, BSD-3-Clause
-license=('MIT')
+# Tags for search/filtering (space-separated)
+tags=('productivity' 'editor' 'tools')
 
-# Runtime dependencies (space-separated)
-depends=('base-system')
+# Category: development, games, multimedia, network, productivity, system, utilities
+category=utilities
 
-# Build-time dependencies (space-separated)
+# Binary size in bytes (auto-calculated if omitted)
+size=0
+
+# SHA-256 checksum (auto-calculated if omitted)
+checksum=
+
+# Dependencies (other ZUR package names, space-separated)
+depends=()
+
+# ===== PERMISSIONS =====
+
+# Filesystem access: none, read, write, full
+permissions_filesystem=none
+
+# Network access: true or false
+permissions_network=false
+
+# Storage access: true or false
+permissions_storage=false
+
+# WASI support: true or false
+permissions_wasi=false
+
+# ===== METADATA =====
+
+# Maintainer contact
+maintainer="Your Name <your.email@example.com>"
 makedepends=('gcc' 'make')
 
 # Optional dependencies with descriptions

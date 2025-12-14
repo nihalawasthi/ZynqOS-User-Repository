@@ -1,368 +1,601 @@
-# Package Guidelines
+# ZynqOS Package Guidelines
 
-This document provides detailed guidelines for creating and maintaining packages in the ZynqOS User Repository.
+This document provides detailed guidelines for creating and maintaining WebAssembly packages in the ZynqOS User Repository (ZUR).
 
 ## Table of Contents
 
+- [Quick Start](#quick-start)
+- [Package Types](#package-types)
 - [Package Naming](#package-naming)
 - [Directory Structure](#directory-structure)
 - [PKGINFO Specification](#pkginfo-specification)
-- [Build Script Requirements](#build-script-requirements)
+- [Building Packages](#building-packages)
 - [Testing](#testing)
 - [Security](#security)
+- [Publishing](#publishing)
 - [Best Practices](#best-practices)
+
+## Quick Start
+
+**Minimum requirements for a ZUR package:**
+1. Working WebAssembly binary (`.wasm` or `.zip`)
+2. `PKGINFO` file with complete metadata
+3. `README.md` explaining what it does
+4. `LICENSE` file
+5. GitHub release with downloadable binary
+
+**Workflow:**
+```bash
+# 1. Build your WASM package
+wasm-pack build --target web
+
+# 2. Create release archive
+cd pkg && zip -r ../myapp-v1.0.0.zip *
+
+# 3. Create GitHub release and upload the zip
+# 4. Fork ZUR and create package directory
+# 5. Add PKGINFO with downloadUrl pointing to release
+# 6. Submit PR
+```
+
+## Package Types
+
+ZynqOS supports three types of WebAssembly packages:
+
+### 1. **Simple WASM** (`pkgtype=wasm`)
+
+Pure WebAssembly binary with no external dependencies.
+
+**File format**: Single `.wasm` file
+
+**Use cases**:
+- Mathematical libraries
+- Data processing
+- Algorithms
+- No DOM access needed
+
+**Example**:
+```rust
+// Pure computation
+#[no_mangle]
+pub extern "C" fn fibonacci(n: i32) -> i32 {
+    if n <= 1 { n } else { fibonacci(n-1) + fibonacci(n-2) }
+}
+```
+
+---
+
+### 2. **WASI** (`pkgtype=wasi`)
+
+WebAssembly System Interface for filesystem and system calls.
+
+**File format**: Single `.wasm` file compiled with WASI target
+
+**Use cases**:
+- Command-line tools
+- File processors
+- System utilities
+- Terminal applications
+
+**Example**:
+```rust
+fn main() {
+    println!("Hello from WASI!");
+    // Can use std::fs, std::env, etc.
+}
+```
+
+**Build**: `cargo build --target wasm32-wasi --release`
+
+---
+
+### 3. **wasm-bindgen** (`pkgtype=wasm-bindgen`)  ⭐ RECOMMENDED
+
+Full JavaScript/DOM interop with Rust using wasm-bindgen.
+
+**File format**: `.zip` containing `.wasm`, `.js`, and optional `.d.ts` files
+
+**Use cases**:
+- Interactive applications
+- Games
+- UI components
+- DOM manipulation
+- Web APIs access
+
+**Example**:
+```rust
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn render_ui() {
+    let window = web_sys::window().unwrap();
+    let document = window.document().unwrap();
+    // Full DOM access!
+}
+```
+
+**Build**: `wasm-pack build --target web`
+
+---
 
 ## Package Naming
 
-### General Rules
+### Rules
 
-1. **Lowercase Only**: Package names must be all lowercase
-2. **Hyphens**: Use hyphens to separate words (e.g., `my-package`)
-3. **No Special Characters**: Only alphanumeric characters and hyphens
-4. **Descriptive**: Name should clearly indicate what the package does
-5. **Unique**: Check that the name doesn't conflict with existing packages
+1. **Lowercase only**: `my-package` not `MyPackage`
+2. **Use hyphens**: `file-manager` not `file_manager`
+3. **Descriptive**: Name should indicate purpose
+4. **Unique**: Check existing packages first
+5. **No special chars**: Only `a-z`, `0-9`, and `-`
 
 ### Naming Conventions
 
-- **Libraries**: Use `lib` prefix (e.g., `libexample`)
-- **Python packages**: Use `python-` prefix (e.g., `python-requests`)
-- **GUI applications**: Use descriptive name (e.g., `text-editor`)
-- **CLI tools**: Use command name (e.g., `file-converter`)
+| Type | Prefix/Format | Example |
+|------|---------------|---------|
+| Applications | descriptive-name | `text-editor`, `calculator` |
+| Games | game-name | `tetris`, `snake-game` |
+| Libraries | lib-name | `lib-json`, `lib-crypto` |
+| Tools/Utilities | tool-name | `file-converter`, `image-optimizer` |
+| Language-specific | lang-package | `rust-analyzer`, `wasm-tools` |
 
 ### Examples
 
-✅ Good names:
-- `web-browser`
-- `python-numpy`
-- `libpng`
-- `video-player`
+✅ **Good names**:
+- `markdown-editor`
+- `image-viewer`
+- `wasm-calculator`
+- `music-player`
 
-❌ Bad names:
-- `WebBrowser` (not lowercase)
-- `my_package` (uses underscore)
-- `app123` (not descriptive)
+❌ **Bad names**:
+- `MyApp` (not lowercase)
+- `app_123` (uses underscore, not descriptive)
 - `super@tool` (special character)
+- `a` (too short, not descriptive)
+
+---
 
 ## Directory Structure
 
 ### Required Structure
 
 ```
-packages/CATEGORY/package-name/
-├── PKGINFO              # Package metadata
-├── build.sh             # Build script
-└── README.md            # Documentation
+packages/<category>/<package-name>/
+├── PKGINFO              # Package metadata (REQUIRED)
+├── README.md            # Usage docs (REQUIRED)
+├── LICENSE              # License file (REQUIRED)
+└── screenshots/         # Optional: preview images
+    ├── screenshot1.png
+    └── screenshot2.png
 ```
 
-### Optional Files
+**Note**: The actual `.wasm` or `.zip` binary should be hosted on GitHub Releases, not in the repository. The `PKGINFO` file contains the `downloadUrl` pointing to the release.
 
-```
-packages/CATEGORY/package-name/
-├── PKGINFO
-├── build.sh
-├── README.md
-├── package-name.patch   # Patches
-├── package-name.service # Systemd service files
-├── LICENSE              # License text if different from source
-└── files/               # Additional files
-    ├── config.conf
-    └── icons/
-```
+### Categories
+
+Place package in the appropriate category directory:
+
+- **development**: Compilers, debuggers, IDEs, dev tools
+- **games**: Games and entertainment
+- **multimedia**: Audio, video, image editors
+- **network**: Web browsers, chat clients, download managers
+- **productivity**: Office suites, note-taking, document editors
+- **system**: System utilities, monitors, file managers
+- **utilities**: General purpose tools
+
+---
 
 ## PKGINFO Specification
 
 ### Required Fields
 
+All packages **MUST** include these fields:
+
 ```bash
-pkgname="package-name"      # Package name
-pkgver="1.0.0"              # Version number
-pkgrel="1"                  # Release number
-pkgdesc="Description"       # Short description
-arch=('arch1' 'arch2')      # Supported architectures
-url="https://..."           # Project homepage
-license=('LICENSE')         # License
-maintainer="Name <email>"   # Package maintainer
+pkgname="my-package"                    # Package name (lowercase, hyphens)
+pkgver="1.0.0"                          # Semantic version (MAJOR.MINOR.PATCH)
+pkgrel="1"                              # Build number (reset to 1 on version bump)
+pkgdesc="Short description"             # One-line description (max 80 chars)
+pkgtype="wasm-bindgen"                  # Package type: wasm, wasi, or wasm-bindgen
+url="https://github.com/user/repo"     # Project homepage
+license=('MIT')                         # License (MIT, GPL-3.0, Apache-2.0, etc.)
+maintainer="Name <email@domain.com>"    # Your contact info
+icon="https://cdn.../icon.png"          # 512x512 PNG icon URL
+downloadUrl="https://github.com/user/repo/releases/download/v1.0.0/my-package.zip"
 ```
 
 ### Optional Fields
 
 ```bash
-depends=('dep1' 'dep2')     # Runtime dependencies
-makedepends=('tool1')       # Build dependencies
-optdepends=('opt1: desc')   # Optional dependencies
-provides=('provides1')      # Virtual packages provided
-conflicts=('conflict1')     # Conflicting packages
-replaces=('old-package')    # Packages replaced by this one
-source=('url1' 'file1')     # Source files
-sha256sums=('hash1')        # Source checksums
-backup=('etc/config')       # Config files to backup
-notes="Important info"      # Additional notes
+category="productivity"                 # Category for organization
+author="Original Author"                # Original software author
+depends=('lib-sdl2' 'lib-opengl')      # Runtime dependencies (other packages)
+optdepends=('lib-music: for sound')    # Optional enhancements
+size="2.5 MB"                          # Package size
+tags=('editor' 'markdown' 'wysiwyg')   # Search tags
+
+# Permissions (request what you need)
+permissions=(
+    'filesystem:read'    # Read files
+    'filesystem:write'   # Write files
+    'network:fetch'      # HTTP requests
+    'storage:local'      # LocalStorage access
+    'wasi:stdio'         # Standard I/O (WASI only)
+)
+
+notes="Additional information or warnings"
 ```
 
 ### Version Numbering
 
-Follow [Semantic Versioning](https://semver.org/):
-- **MAJOR.MINOR.PATCH** (e.g., 1.2.3)
-- MAJOR: Breaking changes
-- MINOR: New features (backward compatible)
-- PATCH: Bug fixes
+Use [Semantic Versioning](https://semver.org/):
+
+**Format**: `MAJOR.MINOR.PATCH`
+
+- **MAJOR** (1.0.0): Breaking changes, incompatible API
+- **MINOR** (0.1.0): New features, backward compatible
+- **PATCH** (0.0.1): Bug fixes only
+
+**Examples**:
+- `1.0.0` - Initial stable release
+- `1.1.0` - Added new feature
+- `1.1.1` - Fixed bug
+- `2.0.0` - Breaking API change
 
 ### Release Number (pkgrel)
 
-- Start at `1` for new package versions
-- Increment when rebuilding same version
+Package rebuild counter:
+
+- Start at `1` for new versions
+- Increment for packaging fixes (not code changes)
 - Reset to `1` when `pkgver` changes
 
-Examples:
-- `1.0.0-1` - Initial release
-- `1.0.0-2` - Rebuild with packaging fixes
-- `1.0.1-1` - New upstream version
-
-## Build Script Requirements
-
-### Basic Structure
-
-```bash
-#!/bin/bash
-set -e  # Exit on error
-
-source ./PKGINFO
-
-prepare() {
-    # Download and prepare sources
-}
-
-build() {
-    # Compile the software
-}
-
-check() {
-    # Run tests (optional)
-}
-
-package() {
-    # Install files to ${pkgdir}
-}
-
-# Main execution
-main() {
-    export pkgdir="pkg/${pkgname}"
-    prepare
-    build
-    package
-}
-
-main "$@"
+**Examples**:
+```
+calculator-1.0.0-1   # Initial release
+calculator-1.0.0-2   # Fixed PKGINFO metadata
+calculator-1.0.1-1   # New version, reset pkgrel
 ```
 
-### Important Rules
+### Download URLs
 
-1. **Error Handling**: Use `set -e` to exit on errors
-2. **Source PKGINFO**: Load package metadata
-3. **Use $pkgdir**: Install to package directory, not system
-4. **Permissions**: Ensure script is executable
-5. **Output**: Provide clear progress messages
-
-### Standard Directories
+Must point to GitHub releases or permanent URLs:
 
 ```bash
-# Binary executables
-"${pkgdir}/usr/bin"
+# ✅ Good - GitHub release
+downloadUrl="https://github.com/user/repo/releases/download/v1.0.0/app.zip"
 
-# Libraries
-"${pkgdir}/usr/lib"
+# ✅ Good - Permanent CDN
+downloadUrl="https://cdn.example.com/packages/app-1.0.0.zip"
 
-# Headers
-"${pkgdir}/usr/include"
-
-# Documentation
-"${pkgdir}/usr/share/doc/${pkgname}"
-
-# Man pages
-"${pkgdir}/usr/share/man/man1"
-
-# Desktop files
-"${pkgdir}/usr/share/applications"
-
-# Icons
-"${pkgdir}/usr/share/icons"
-
-# Configuration
-"${pkgdir}/etc/${pkgname}"
+# ❌ Bad - Will move/change
+downloadUrl="https://mywebsite.com/latest.zip"
 ```
 
-### Common Build Patterns
-
-#### Makefile-based
-
-```bash
-build() {
-    make PREFIX=/usr
-}
-
-package() {
-    make PREFIX=/usr DESTDIR="${pkgdir}" install
-}
-```
-
-#### Autotools
-
-```bash
-build() {
-    ./configure --prefix=/usr
-    make
-}
-
-package() {
-    make DESTDIR="${pkgdir}" install
-}
-```
-
-#### CMake
-
-```bash
-build() {
-    cmake -B build \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=Release
-    cmake --build build
-}
-
-package() {
-    DESTDIR="${pkgdir}" cmake --install build
-}
-```
-
-#### Python
-
-```bash
-build() {
-    python setup.py build
-}
-
-package() {
-    python setup.py install --root="${pkgdir}" --optimize=1
-}
-```
-
-## Testing
-
-### Pre-submission Testing
-
-1. **Syntax Check**: Verify PKGINFO syntax
-2. **Build Test**: Run build script in clean environment
-3. **Installation Test**: Verify files install correctly
-4. **Runtime Test**: Test the application works
-5. **Dependency Check**: Verify all dependencies are listed
-
-### Test Checklist
-
-- [ ] Package builds without errors
-- [ ] All dependencies are available
-- [ ] Files install to correct locations
-- [ ] Application runs correctly
-- [ ] No conflicts with existing packages
-- [ ] Documentation is complete
-- [ ] Checksums are correct
-
-## Security
-
-### Source Verification
-
-1. **Use HTTPS**: Always use HTTPS URLs for sources
-2. **Verify Checksums**: Provide SHA256 checksums
-3. **GPG Signatures**: Include GPG verification if available
-4. **Trusted Sources**: Download from official sources only
-
-### Code Review
-
-1. **Inspect Sources**: Review source code for issues
-2. **Known Vulnerabilities**: Check CVE databases
-3. **Minimal Permissions**: Don't request unnecessary permissions
-4. **Secure Defaults**: Use secure configuration defaults
-
-### Update Policy
-
-1. **Security Updates**: Apply security patches promptly
-2. **Monitor Upstream**: Watch for security advisories
-3. **Notify Users**: Document security updates in changelog
-
-## Best Practices
-
-### Documentation
-
-- Write clear, concise README
-- Include usage examples
-- Document configuration options
-- List known issues
-- Provide troubleshooting guide
-
-### Code Quality
-
-- Follow shell scripting best practices
-- Use shellcheck for linting
-- Add comments for complex logic
-- Handle edge cases
-- Provide meaningful error messages
-
-### Maintenance
-
-- Respond to issues promptly
-- Keep package updated
-- Test before pushing updates
-- Document changes in changelog
-- Monitor upstream releases
-
-### Performance
-
-- Minimize build time
-- Reduce package size
-- Avoid unnecessary dependencies
-- Use parallel builds when possible
-
-### Compatibility
-
-- Test on multiple architectures
-- Consider backward compatibility
-- Document architecture-specific issues
-- Provide alternatives when needed
-
-## Common Mistakes
-
-### Avoid These
-
-❌ Installing directly to system during build
-❌ Hardcoding paths without PREFIX
-❌ Missing or incorrect dependencies
-❌ No error handling in build script
-❌ Incomplete or missing documentation
-❌ Not testing before submission
-❌ Ignoring security best practices
-
-### Do These Instead
-
-✅ Install to ${pkgdir} directory
-✅ Use configurable PREFIX
-✅ List all dependencies explicitly
-✅ Use `set -e` and check return codes
-✅ Complete README with examples
-✅ Test thoroughly in clean environment
-✅ Verify sources and use checksums
-
-## Getting Help
-
-- Review existing packages for examples
-- Ask in issues for clarification
-- Consult the CONTRIBUTING.md file
-- Check documentation in `docs/`
-
-## References
-
-- [Semantic Versioning](https://semver.org/)
-- [Arch Linux PKGBUILD](https://wiki.archlinux.org/title/PKGBUILD)
-- [Filesystem Hierarchy Standard](https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html)
-- [ShellCheck](https://www.shellcheck.net/)
+**Requirements**:
+- HTTPS only (no HTTP)
+- Permanent, versioned URLs
+- Direct download (no redirects to login pages)
+- CORS-enabled for browser access
 
 ---
 
-These guidelines help maintain consistency and quality across all packages in the ZynqOS User Repository. Thank you for following them!
+## Building Packages
+
+### 1. Install Build Tools
+
+```bash
+# Rust + wasm-pack (RECOMMENDED)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+cargo install wasm-pack
+
+# Add WASM target for WASI
+rustup target add wasm32-wasi
+```
+
+### 2. Create Your Project
+
+**For wasm-bindgen (with DOM access)**:
+```bash
+cargo new --lib my-package
+cd my-package
+
+# Add to Cargo.toml:
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+web-sys = { version = "0.3", features = ["Window", "Document"] }
+
+# Build
+wasm-pack build --target web --release
+```
+
+**For WASI (command-line tools)**:
+```bash
+cargo new my-cli-tool
+cd my-cli-tool
+
+# Build
+cargo build --target wasm32-wasi --release
+```
+
+### 3. Package for Distribution
+
+**wasm-bindgen packages** (recommended):
+```bash
+cd pkg
+zip -r ../my-package-v1.0.0.zip *
+# Upload to GitHub Releases
+```
+
+**Simple WASM/WASI**:
+```bash
+# Just upload the .wasm file to GitHub Releases
+cp target/wasm32-wasi/release/my-tool.wasm my-tool-v1.0.0.wasm
+```
+
+### 4. Create GitHub Release
+
+1. Tag your code: `git tag v1.0.0 && git push --tags`
+2. Go to GitHub → Releases → "Create new release"
+3. Upload your `.zip` or `.wasm` file
+4. Copy the download URL
+
+### 5. Create ZUR Package Entry
+
+Fork ZUR and create:
+```
+packages/<category>/<pkgname>/
+├── PKGINFO          # Use downloadUrl from step 4
+├── README.md        # Usage instructions
+└── LICENSE          # Copy from your repo
+```
+
+---
+
+## Testing
+
+### Local Testing (Before Submitting)
+
+**Test in ZynqOS directly:**
+
+1. Open ZynqOS App Store
+2. Click "Upload" tab
+3. Upload your `.wasm` or `.zip` file
+4. Click "Execute" to test
+5. Check console for errors
+
+**Validate PKGINFO**:
+```bash
+# Check for required fields
+grep -E "pkgname|pkgver|pkgtype|downloadUrl|icon" PKGINFO
+
+# Verify no syntax errors
+bash -n PKGINFO
+```
+
+### Pre-Submission Checklist
+
+- [ ] Package builds without errors
+- [ ] Package executes in ZynqOS successfully
+- [ ] PKGINFO has all required fields
+- [ ] downloadUrl is permanent and accessible
+- [ ] Icon is 512x512 PNG and loads
+- [ ] README.md explains what it does
+- [ ] LICENSE file is included
+- [ ] No hardcoded paths or assumptions about filesystem
+- [ ] Tested on fresh ZynqOS install
+
+---
+
+## Security
+
+### Sandboxing
+
+All WASM packages run in browser sandbox:
+
+✅ **Allowed**:
+- Memory operations (within WASM)
+- Computation
+- Canvas/WebGL rendering
+- Web APIs (via wasm-bindgen)
+
+❌ **Blocked**:
+- Native system calls
+- Direct filesystem access (except virtual FS)
+- Network sockets (use Fetch API)
+- Reading arbitrary memory
+
+### Permissions
+
+Request minimum permissions needed:
+
+```bash
+# Only request what you need
+permissions=(
+    'filesystem:read'    # If you read files
+    'network:fetch'      # If you make HTTP requests
+)
+
+# Don't request unnecessary permissions
+# permissions=('filesystem:write')  # If you don't write files
+```
+
+### Best Practices
+
+1. **No secrets in code**: Don't embed API keys, passwords
+2. **Validate inputs**: Check user-provided data
+3. **Use HTTPS**: All downloadUrls must use HTTPS
+4. **Limit dependencies**: Fewer deps = smaller attack surface
+5. **Keep updated**: Update wasm-bindgen, dependencies regularly
+
+---
+
+## Publishing
+
+### Submission Process
+
+1. **Fork** [ZynqOS-User-Repository](https://github.com/ZynqOS/ZynqOS-User-Repository)
+2. **Create** package directory: `packages/<category>/<pkgname>/`
+3. **Add** PKGINFO, README.md, LICENSE
+4. **Test** package locally
+5. **Commit** with message: `Add <pkgname> v<version>`
+6. **Push** to your fork
+7. **Open** Pull Request to main repo
+
+### PR Requirements
+
+Your PR must include:
+
+- ✅ Complete PKGINFO with all required fields
+- ✅ README.md with usage instructions
+- ✅ LICENSE file
+- ✅ Working downloadUrl (tested)
+- ✅ Valid icon URL (512x512 PNG)
+
+Maintainers will:
+- Review PKGINFO format
+- Test download URL
+- Verify icon loads
+- Check for conflicts
+- Merge if approved
+
+### Updates
+
+To update an existing package:
+
+1. Bump `pkgver` in PKGINFO
+2. Update `downloadUrl` to new release
+3. Update README if needed
+4. Submit PR with title: `Update <pkgname> to v<version>`
+
+---
+
+## Best Practices
+
+### Performance
+
+**Optimize WASM size**:
+```bash
+# Use wasm-opt
+wasm-opt -Oz input.wasm -o output.wasm
+
+# Strip debug info
+wasm-strip output.wasm
+
+# Enable LTO in Cargo.toml
+[profile.release]
+lto = true
+opt-level = "z"
+```
+
+**Typical sizes**:
+- Simple WASM: 10-100 KB
+- WASI tool: 100-500 KB  
+- wasm-bindgen app: 200 KB - 2 MB
+- Game with assets: 2-10 MB
+
+### Documentation
+
+**README.md should include**:
+```markdown
+# Package Name
+
+Short description
+
+## Features
+- Feature 1
+- Feature 2
+
+## Usage
+1. Open from Start Menu
+2. Click button to...
+
+## Screenshots
+![Screenshot](screenshots/screenshot1.png)
+
+## Building
+\```bash
+wasm-pack build --target web --release
+\```
+
+## License
+MIT
+```
+
+**Clear error messages**:
+```rust
+#[wasm_bindgen]
+pub fn process_file(data: &[u8]) -> Result<String, JsValue> {
+    if data.is_empty() {
+        return Err(JsValue::from_str("File is empty"));
+    }
+    // Process...
+}
+```
+
+### Maintenance
+
+- **Keep updated**: Update when upstream releases new versions
+- **Fix bugs**: Respond to issue reports
+- **Test updates**: Verify updates work before pushing
+- **Deprecation**: If abandoning, mark as deprecated in PKGINFO
+- **Handoff**: Transfer maintainership if you can't continue
+
+---
+
+## Quick Reference
+
+### Minimal PKGINFO Template
+
+```bash
+pkgname="my-app"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Short description"
+pkgtype="wasm-bindgen"
+url="https://github.com/user/repo"
+license=('MIT')
+maintainer="Your Name <email@example.com>"
+icon="https://cdn.example.com/icon.png"
+downloadUrl="https://github.com/user/repo/releases/download/v1.0.0/my-app.zip"
+category="productivity"
+```
+
+### Build Commands
+
+```bash
+# wasm-bindgen (with DOM)
+wasm-pack build --target web --release
+cd pkg && zip -r ../app.zip *
+
+# WASI (CLI tool)
+cargo build --target wasm32-wasi --release
+cp target/wasm32-wasi/release/app.wasm app-v1.0.0.wasm
+
+# Optimize
+wasm-opt -Oz input.wasm -o output.wasm
+```
+
+### File Checklist
+
+- [ ] `PKGINFO` - Complete metadata
+- [ ] `README.md` - Usage docs
+- [ ] `LICENSE` - License file
+- [ ] Binary on GitHub Releases (`.wasm` or `.zip`)
+- [ ] `screenshots/` (optional) - Preview images
+
+---
+
+## Need Help?
+
+- 📖 [Quick Start Guide](../README.md)
+- 🎯 [Example Packages](../packages/)
+- 💬 [GitHub Discussions](https://github.com/ZynqOS/ZynqOS-User-Repository/discussions)
+- 🐛 [Report Issues](https://github.com/ZynqOS/ZynqOS-User-Repository/issues)
+
+---
+
+**Last updated**: 2024  
+**ZUR Version**: 1.0

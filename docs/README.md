@@ -4,14 +4,6 @@ Welcome to the ZynqOS User Repository documentation!
 
 ## Available Documentation
 
-### [QUICK_START.md](QUICK_START.md)
-A beginner-friendly guide to getting started with ZUR, whether you're installing packages or contributing new ones.
-
-**Read this if you:**
-- Are new to ZUR
-- Want to quickly install a package
-- Want to create your first package
-
 ### [PACKAGE_GUIDELINES.md](PACKAGE_GUIDELINES.md)
 Comprehensive guidelines for creating and maintaining packages, including naming conventions, directory structure, and best practices.
 
