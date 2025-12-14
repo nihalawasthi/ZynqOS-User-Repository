@@ -3,9 +3,6 @@ name: Generate Package Manifest
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'packages/**'
-      - 'generate-manifest.ps1'
   workflow_dispatch:
 
 permissions:
