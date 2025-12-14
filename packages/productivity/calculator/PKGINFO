@@ -1,0 +1,12 @@
+pkgname="calculator"
+pkgver="1.0.0"
+pkgrel="1"
+pkgdesc="Simple WASM calculator with wasm-bindgen testing ZUR"
+pkgtype="wasm-bindgen"
+url="https://github.com/nihalawasthi/ZynqOS-User-Repository"
+license=('MIT')
+maintainer="Your Name <email@example.com>"
+icon="https://your.cdn/icon-calculator.png"
+downloadUrl="https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/calculator-v1.0.0/calculator-wasm.zip"
+category="productivity"
+tags=('calculator' 'wasm' 'wasm-bindgen')
