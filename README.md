@@ -1,10 +1,17 @@
 # ZynqOS User Repository (ZUR)
 
-Welcome to the ZynqOS User Repository! This is a community-driven repository where anyone can contribute custom applications and packages for ZynqOS, similar to how the Arch User Repository (AUR) functions for Arch Linux.
+Welcome to the ZynqOS User Repository! This is a community-driven repository where anyone can contribute custom WebAssembly applications and packages for ZynqOS, similar to how the Arch User Repository (AUR) functions for Arch Linux.
 
 ## What is ZUR?
 
-The ZynqOS User Repository (ZUR) is a collection of package build scripts and metadata maintained by the ZynqOS community. It enables users to easily share, discover, and install custom applications that are not part of the official ZynqOS repositories.
+The ZynqOS User Repository (ZUR) is a collection of WebAssembly packages (WASM, WASI, wasm-bindgen) maintained by the ZynqOS community. It enables users to easily share, discover, and install custom applications that run in the browser through ZynqOS.
+
+**Key Features of ZynqOS Packages:**
+- 🦀 Built with Rust, C, C++, or AssemblyScript
+- 🌐 Runs entirely in the browser (no server needed)
+- 🔒 Sandboxed execution for security
+- 📦 Distributed as WebAssembly binaries
+- ⚡ Near-native performance
 
 ## Features
 
@@ -35,26 +42,49 @@ ZynqOS-User-Repository/
 
 ### For Users
 
+**Install from ZynqOS App Store:**
+1. Open ZynqOS in your browser
+2. Launch **App Store** from Start Menu
+3. Browse available packages from ZUR
+4. Click Install on any package
+5. Find it in your Start Menu after installation
+
+**Manual Installation:**
 1. Browse the `packages/` directory to find applications
-2. Navigate to the package directory you want to install
-3. Follow the instructions in the package's README.md
+2. Download the package release (`.wasm` or `.zip` file)
+3. In ZynqOS, open **App Store** → **Upload** tab
+4. Select the downloaded file and click Upload
 
 ### For Contributors
 
+**Quick Package Submission:**
 1. Fork this repository
-2. Create your package following the [Package Guidelines](docs/PACKAGE_GUIDELINES.md)
-3. Use the provided [template](templates/package-template/) as a starting point
-4. Submit a pull request
-5. See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines
+2. Build your WASM package: `wasm-pack build --target web`
+3. Create GitHub release and upload your binary
+4. Create package directory: `packages/<category>/<your-package>/`
+5. Add required files:
+   - `PKGINFO` - Package metadata (with downloadUrl to your release)
+   - `README.md` - Usage instructions
+   - `LICENSE` - License file
+6. Submit a pull request
+6. See [CONTRIBUTING.md](CONTRIBUTING.md) and [Package Guidelines](docs/PACKAGE_GUIDELINES.md)
+
+**Build Tools Required:**
+- Rust + wasm-pack (recommended)
+- Or: Emscripten (C/C++), AssemblyScript, etc.
+- See [Package Creation Guide](https://github.com/nihalawasthi/MicroOs/blob/main/docs/PACKAGE_CREATION_GUIDE.md)
 
 ## Package Format
 
-Each package should contain:
+ZUR packages are WebAssembly binaries hosted on GitHub Releases with metadata in this repository:
 
-- `PKGINFO` - Package metadata (name, version, description, dependencies, etc.)
-- `build.sh` - Build/installation script
-- `README.md` - Package-specific documentation
-- Source files or links to source code
+Each package directory should contain:
+
+- `PKGINFO` - Package metadata (name, version, description, downloadUrl, etc.)
+- `README.md` - Usage instructions and build guide
+- `LICENSE` - License file
+
+The actual `.wasm` or `.zip` binary is hosted on your GitHub release and referenced in PKGINFO's `downloadUrl` field.
 
 ## Getting Help
 
@@ -73,6 +103,19 @@ Each package should contain:
 ## License
 
 Individual packages may have their own licenses. Please check each package directory for licensing information. The repository infrastructure is licensed under Apache License 2.0.
+
+## Contributors
+
+Thanks to all the amazing people who contribute to ZUR!
+
+<a href="https://github.com/nihalawasthi/ZynqOS-User-Repository/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=nihalawasthi/ZynqOS-User-Repository" />
+</a>
+
+## ZynqOS Founder
+
+  <img src="" />
+
 
 ## Acknowledgments
 

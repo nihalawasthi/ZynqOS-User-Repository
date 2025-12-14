@@ -1,0 +1,30 @@
+{
+  "name": "ZynqOS User Repository",
+  "packages": [
+    {
+      "category": "utilities",
+      "type": "wasi",
+      "url": "https://github.com/nihalawasthi/ZynqOS-User-Repository",
+      "size": "45678",
+      "version": "1.0.0",
+      "maintainer": "ZynqOS Community <community@zynqos.org>",
+      "downloadUrl": "https://github.com/nihalawasthi/ZynqOS-User-Repository/releases/download/hello-zynq-v1.0.0/hello-zynq.wasm",
+      "tags": [
+        "example",
+        "tutorial",
+        "hello-world",
+        "wasi"
+      ],
+      "description": "A simple Hello World WASI application for ZynqOS",
+      "license": "MIT",
+      "author": "ZynqOS Community",
+      "icon": "👋",
+      "id": "hello-zynq",
+      "name": "hello-zynq",
+      "dependencies": []
+    }
+  ],
+  "version": "1.0",
+  "lastUpdated": "2025-12-14T22:47:27Z",
+  "description": "Community-maintained WebAssembly packages for ZynqOS"
+}
